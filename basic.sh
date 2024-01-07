@@ -54,8 +54,11 @@ $man_command -M $man_dir -w cat >/dev/null
 test $($man_command -M $man_dir -w cat | wc -l) = 1
 
 cp $($man_command -w cat) $man_dir/man1/"c a t.1"
+cp $($man_command -w man) $man_dir/man1/"m a n.1"
 $man_command $man_dir/man1/"c a t.1" >/dev/null
 
 test $($man_command -M $man_dir -w "c a t" | wc -l) = 1
+test $($man_command -M $man_dir -w "m a n" | wc -l) = 1
+test $($man_command -M $man_dir -w "c a t" "m a n" | wc -l) = 2
 
 #EOF
