@@ -72,6 +72,6 @@ $man_command 1 cat >/dev/null
 $man_command -a 1 cat man >/dev/null
 
 $man_command -a -P cat 1 man man man >/dev/null
-test $($man_command -a -P cat 1 man man man >/dev/null | wc -l) -gt 300
+test $($man_command -a -P cat 1 man man man 2>/dev/null | wc -l) -gt 300
 
 #EOF
