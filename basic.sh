@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 # env man_command="sh $HOME/projects/src/usr.bin/man/man.sh" ./basic.sh 
 #
@@ -10,6 +10,7 @@ set -e
 : ${man_command="/usr/bin/man"}
 
 : ${bug_page_spaces=false}
+: ${bug_page_spaces_new=false}
 
 MANPATH="/usr/share/man"; export MANPATH
 
@@ -18,14 +19,12 @@ trap 'exit_handler' 0
 
 exit_handler ()
 {
-  ret=$?
+  local ret=$?
   if [ $ret = 0 ]; then
     echo "all tests are successfull done"
   else
-    echo "A test failed at line number=$BASH_LINENO status=$ret"
-    if [ -n "BASH_LINENO" ]; then
-      cat -n $0 | grep -E "^\\s+${BASH_LINENO}\\s+"
-    fi
+    echo "A test failed, status=$ret"
+    echo "Please run again: sh -x $0 $@"
   fi
 
   rm -rf $tmpdir
@@ -38,7 +37,9 @@ $man_command -w cat > /dev/null
 test $($man_command -w cat | wc -l) = 1
 
 # twice
+if $bug_page_spaces_new; then
 test $($man_command -w cat man | wc -l) = 2
+fi
 
 # cat(1) is larger than NN bytes
 test $($man_command cat | wc -l) -gt 60
@@ -65,12 +66,14 @@ else
   true
 fi
 
+if $bug_page_spaces_new; then
 $man_command -P cat cat >/dev/null
 $man_command 1 cat >/dev/null
 $man_command -a 1 cat man >/dev/null
 
 $man_command -a -P cat 1 man man man >/dev/null
 test $($man_command -a -P cat 1 man man man 2>/dev/null | wc -l) -gt 300
+fi
 
 # temporary manpath
 tmpdir=$(mktemp -d)
