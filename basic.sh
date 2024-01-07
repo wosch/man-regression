@@ -17,6 +17,8 @@ exit_handler ()
   else
     echo "A test failed: $?"
   fi
+
+  rm -rf $tmpdir
 }
 
 $man -w cat > /dev/null
@@ -27,7 +29,7 @@ test $($man -w cat | wc -l) = 1
 test $($man cat | wc -l) -gt 70
 test $($man -S1 cat | wc -l) -gt 70
 
-if $man -S3 cat >/dev/null; then
+if $man -S3 cat >/dev/null 2>&1; then
   false
 else
   true
@@ -36,10 +38,24 @@ fi
 
 $man -k socket >/dev/null
 
-if $man -k socket12345 >/dev/null; then
+if $man -k socket12345 >/dev/null 2>&1; then
   false
 else
   true
 fi
+
+tmpdir=$(mktemp -d)
+man_dir="$tmpdir/man"
+mkdir -p $man_dir/man1
+
+cp $($man -w cat) $man_dir/man1
+
+$man -M $man_dir -w cat >/dev/null
+test $($man -M $man_dir -w cat | wc -l) = 1
+
+cp $($man -w cat) $man_dir/man1/"c a t.1"
+$man $man_dir/man1/"c a t.1" >/dev/null
+
+#test $($man -M $man_dir -w "c a t" | wc -l) = 1
 
 #EOF
