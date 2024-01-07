@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 # env man_command="sh $HOME/projects/src/usr.bin/man/man.sh" ./basic.sh 
 #
@@ -21,7 +21,10 @@ exit_handler ()
   if [ $? = 0 ]; then
     echo "all tests are successfull done"
   else
-    echo "A test failed: $?"
+    echo "A test failed at line number=$BASH_LINENO status=$?"
+    if [ -n "BASH_LINENO" ]; then
+      cat -n $0 | grep -B 2 -A 8 -E "\\s+${BASH_LINENO}\\s+"
+    fi
   fi
 
   rm -rf $tmpdir
