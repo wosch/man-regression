@@ -18,12 +18,13 @@ trap 'exit_handler' 0
 
 exit_handler ()
 {
-  if [ $? = 0 ]; then
+  ret=$?
+  if [ $ret = 0 ]; then
     echo "all tests are successfull done"
   else
-    echo "A test failed at line number=$BASH_LINENO status=$?"
+    echo "A test failed at line number=$BASH_LINENO status=$ret"
     if [ -n "BASH_LINENO" ]; then
-      cat -n $0 | grep -B 2 -A 8 -E "\\s+${BASH_LINENO}\\s+"
+      cat -n $0 | grep -E "^\\s+${BASH_LINENO}\\s+"
     fi
   fi
 
