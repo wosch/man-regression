@@ -55,6 +55,9 @@ else
   true
 fi
 
+# no MANPATH variable set
+( unset MANPATH; $man_command -w cat2 > /dev/null )
+
 # apropos
 $man_command -k socket >/dev/null
 test $($man_command -k socket 2>/dev/null | wc -l) -gt 40
