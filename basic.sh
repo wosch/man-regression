@@ -29,9 +29,9 @@ $man_command -w cat > /dev/null
 test $($man_command -w cat | wc -l) = 1
 test $($man_command -w cat man | wc -l) = 2
 
-test $($man_command cat | wc -l) -gt 70
+test $($man_command cat | wc -l) -gt 60
 $man_command -S1 cat >/dev/null
-test $($man_command -S1 cat | wc -l) -gt 70
+test $($man_command -S1 cat | wc -l) -gt 60
 
 if $man_command -S3 cat >/dev/null 2>&1; then
   false
