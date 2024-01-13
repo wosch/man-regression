@@ -14,6 +14,8 @@ set -e
 
 MANPATH="/usr/share/man"; export MANPATH
 
+uname=$(uname)
+
 # simple error/exit handler for everything
 trap 'exit_handler' 0
 
@@ -49,7 +51,7 @@ $man_command -S1 cat >/dev/null
 test $($man_command -S1 cat | wc -l) -gt 60
 
 # cat(1) is not in section 3
-if $man_command -S3 cat >/dev/null 2>&1; then
+if $man_command -S4 cat >/dev/null 2>&1; then
   false
 else
   true
@@ -77,8 +79,9 @@ $man_command -M /usr/share/man:/usr/share/man -a 1 cat man >/dev/null
 
 $man_command -M /usr/share/man:/usr/share/man -a -P cat 1 man man man >/dev/null
 
+size=$(expr $($man_command -M /usr/share/man cat | wc -l) '*' 3)
 # cat(1) manual page is 200 bytes long
-test $($man_command -M /usr/share/man:/usr/share/man -a -P cat cat cat cat 2>/dev/null | wc -l) -ge 600
+test $($man_command -M /usr/share/man:/usr/share/man -a -P cat cat cat cat 2>/dev/null | wc -l) -ge $size
 fi
 
 # temporary manpath
@@ -111,8 +114,13 @@ cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
 test $($man_command -M $man_dir -w "c a t" | wc -l) = 1
 
 test $($man_command -M $man_dir -w "c a t" "m a n" "c p" | wc -l) = 3
-test $($man_command -a -M $man_dir:$man_dir -w "c a t" "m a n" "c p" | wc -l) = 6
+
+# same manpath several times
+case $uname in FreeBSD ) count=6;; *) count=3;; esac
+test $($man_command -a -M $man_dir:$man_dir -w "c a t" "m a n" "c p" | wc -l) = $count
+
 fi
+
 
 # multiple copies of a manual pages (gzip'd or not)
 cp $($man_command -w cp) $man_dir/man1/cp.1.gz
