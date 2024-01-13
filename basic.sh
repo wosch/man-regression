@@ -23,7 +23,7 @@ exit_handler ()
 {
   local ret=$?
   if [ $ret = 0 ]; then
-    echo "all tests are successfull done"
+    echo "All man(1) tests are successfull done."
   else
     echo "A test failed, status=$ret"
     echo "Please run again: sh -x $0 $@"
