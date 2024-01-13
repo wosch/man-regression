@@ -109,6 +109,9 @@ cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
 gunzip $man_dir/man1/"c p.1.gz"
 cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
 test $($man_command -M $man_dir -w "c a t" | wc -l) = 1
+
+test $($man_command -M $man_dir -w "c a t" "m a n" "c p" | wc -l) = 3
+test $($man_command -a -M $man_dir:$man_dir -w "c a t" "m a n" "c p" | wc -l) = 6
 fi
 
 # multiple copies of a manual pages (gzip'd or not)
