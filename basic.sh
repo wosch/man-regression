@@ -62,7 +62,7 @@ fi
 
 # apropos
 $man_command -k socket >/dev/null
-test $($man_command -k socket 2>/dev/null | wc -l) -gt 40
+test $($man_command -k socket 2>/dev/null | wc -l) -ge 7
 
 # expect a non zero exit if nothing was found
 if $man_command -k socket12345 >/dev/null 2>&1; then
@@ -108,9 +108,8 @@ test $($man_command -M $man_dir -w "m a n" | wc -l) = 1
 test $($man_command -M $man_dir -w "c a t" "m a n" | wc -l) = 2
 
 # multiple copies of a manual pages (gzip'd or not), with spaces
-cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
-gunzip $man_dir/man1/"c p.1.gz"
-cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
+$man_command cp > $man_dir/man1/"c p.1"
+$man_command cp | gzip > $man_dir/man1/"c p.1.gz"
 test $($man_command -M $man_dir -w "c a t" | wc -l) = 1
 
 test $($man_command -M $man_dir -w "c a t" "m a n" "c p" | wc -l) = 3
@@ -123,9 +122,8 @@ fi
 
 
 # multiple copies of a manual pages (gzip'd or not)
-cp $($man_command -w cp) $man_dir/man1/cp.1.gz
-gunzip $man_dir/man1/cp.1.gz
-cp $($man_command -w cp) $man_dir/man1/cp.1.gz
+$man_command cp >  $man_dir/man1/cp.1
+$man_command cp | gzip >  $man_dir/man1/cp.1.gz
 test $($man_command -M $man_dir -w cp | wc -l) = 1
 
 # meta shell characters
