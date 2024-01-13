@@ -77,11 +77,9 @@ else
 fi
 
 if $bug_page_spaces_new; then
-
 $man_command -P cat cat >/dev/null
 $man_command 1 cat >/dev/null
 $man_command -M /usr/share/man:/usr/share/man -a 1 cat man >/dev/null
-
 $man_command -M /usr/share/man:/usr/share/man -a -P cat 1 man man man >/dev/null
 
 size=$(expr $($man_command -M /usr/share/man cat | wc -l) '*' 3)
@@ -122,7 +120,6 @@ test $($man_command -M $man_dir -w "c a t" "m a n" "c p" | wc -l) = 3
 # same manpath several times
 case $uname in FreeBSD ) count=6;; *) count=3;; esac
 test $($man_command -a -M $man_dir:$man_dir -w "c a t" "m a n" "c p" | wc -l) = $count
-
 fi
 
 
@@ -132,12 +129,23 @@ $man_command cp | gzip >  $man_dir/man1/cp.1.gz
 test $($man_command -M $man_dir -w cp | wc -l) = 1
 
 # meta shell characters
-for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '\\' #'`' #'$' #'$$' '$1' '$2' '$@'
+for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '	'
 do
   cp $($man_command -w date) "$man_dir/man1/d${i}${i}e.1.gz"
   $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
   $man_command -M $man_dir -- "d${i}${i}e" >/dev/null
 done
+
+
+# meta shell characters
+if $bug_page_quotes; then
+for i in '`' '$' #'$$' '$1' '$2' '$@'
+do
+  cp $($man_command -w date) "$man_dir/man1/d${i}${i}e.1.gz"
+  $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
+  $man_command -M $man_dir -- "d${i}${i}e" >/dev/null
+done
+fi
 
 # double quotes
 if $bug_page_quotes; then
