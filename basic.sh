@@ -15,6 +15,7 @@ MANPATH="/usr/share/man"; export MANPATH
 # known bugs in older FreeBSD releases
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
+: ${bug_page_quotes=false}
 
 MANPATH="/usr/share/man"; export MANPATH
 
@@ -131,11 +132,21 @@ $man_command cp | gzip >  $man_dir/man1/cp.1.gz
 test $($man_command -M $man_dir -w cp | wc -l) = 1
 
 # meta shell characters
-for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|'
+for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '\\' #'`' #'$' #'$$' '$1' '$2' '$@'
 do
   cp $($man_command -w date) "$man_dir/man1/d${i}${i}e.1.gz"
   $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
-  $man_command -M $man_dir "d${i}${i}e" >/dev/null
+  $man_command -M $man_dir -- "d${i}${i}e" >/dev/null
 done
+
+# double quotes
+if $bug_page_quotes; then
+cp $($man_command -w date) "$man_dir/man1/d\"\"e.1.gz"
+cp $($man_command -w date) "$man_dir/man1/d\"e.1.gz"
+$man_command "$man_dir/man1/d\"\"e.1.gz" >/dev/null
+$man_command "$man_dir/man1/d\"e.1.gz" >/dev/null
+$man_command -M $man_dir "d\"\"e" >/dev/null
+$man_command -M $man_dir "d\"e" >/dev/null
+fi
 
 #EOF
