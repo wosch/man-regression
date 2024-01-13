@@ -9,8 +9,8 @@ set -e
 # man command to test
 : ${man_command="/usr/bin/man"}
 
-: ${bug_page_spaces=false}
-: ${bug_page_spaces_new=false}
+: ${bug_page_spaces=true}
+: ${bug_page_spaces_new=true}
 
 MANPATH="/usr/share/man"; export MANPATH
 
