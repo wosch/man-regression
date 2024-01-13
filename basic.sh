@@ -1,18 +1,20 @@
 #!/bin/sh
+# Copyright (c) 2023-2024 Wolfram Schneider <wosch@FreeBSD.org>
 #
-# env man_command="sh $HOME/projects/src/usr.bin/man/man.sh" ./basic.sh 
+# env man_command="sh /usr/src/usr.bin/man/man.sh" ./basic.sh 
 #
 # in case of an error run this script with /bin/sh -x
 
 set -e
+PATH="/bin:/usr/bin:/usr/local/bin"; export PATH
+MANPATH="/usr/share/man"; export MANPATH
 
 # man command to test
 : ${man_command="/usr/bin/man"}
 
+# known bugs in older FreeBSD releases
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
-
-MANPATH="/usr/share/man"; export MANPATH
 
 # simple error/exit handler for everything
 trap 'exit_handler' 0
