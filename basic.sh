@@ -103,6 +103,12 @@ if $bug_page_spaces; then
 test $($man_command -M $man_dir -w "c a t" | wc -l) = 1
 test $($man_command -M $man_dir -w "m a n" | wc -l) = 1
 test $($man_command -M $man_dir -w "c a t" "m a n" | wc -l) = 2
+
+# multiple copies of a manual pages (gzip'd or not), with spaces
+cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
+gunzip $man_dir/man1/"c p.1.gz"
+cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
+test $($man_command -M $man_dir -w "c a t" | wc -l) = 1
 fi
 
 # multiple copies of a manual pages (gzip'd or not)
@@ -110,14 +116,6 @@ cp $($man_command -w cp) $man_dir/man1/cp.1.gz
 gunzip $man_dir/man1/cp.1.gz
 cp $($man_command -w cp) $man_dir/man1/cp.1.gz
 test $($man_command -M $man_dir -w cp | wc -l) = 1
-
-
-# multiple copies of a manual pages (gzip'd or not), with spaces
-cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
-gunzip $man_dir/man1/"c p.1.gz"
-cp $($man_command -w cp) $man_dir/man1/"c p.1.gz"
-#ls -l $man_dir/man1/
-#test $($man_command -M $man_dir -w "c p" | wc -l) = 1
 
 
 #EOF
