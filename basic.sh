@@ -2,15 +2,22 @@
 # Copyright (c) 2023-2024 Wolfram Schneider <wosch@FreeBSD.org>
 #
 # This script checks if man(1) works as designed on FreeBSD.
-# It may run on Linux and MacOS.
+# It may run on Linux and MacOS as well.
 #
 # for developing, try:
-# env man_command="sh /usr/src/usr.bin/man/man.sh" ./basic.sh 
 #
-# in case of an error run this script with /bin/sh -x
+#   env man_command="sh /usr/src/usr.bin/man/man.sh" ./basic.sh 
+#
+# in case of an error run this script with: env DEBUG=true
 #
 
 set -e
+
+# run in debug mode
+: ${DEBUG=false}
+if $DEBUG; then
+  set -x
+fi
 
 # set default values for path
 PATH="/bin:/usr/bin:/usr/local/bin"; export PATH
