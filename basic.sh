@@ -45,7 +45,7 @@ exit_handler ()
     echo "All man(1) tests are successfull done."
   else
     echo "A test failed, status=$ret"
-    echo "Please run again: sh -x $0 $@"
+    echo "Please run again: env DEBUG=true $0 $@"
   fi
 
   rm -rf $tmpdir
