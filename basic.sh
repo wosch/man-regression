@@ -11,19 +11,20 @@
 #
 
 set -e
+
+# set default values for path
 PATH="/bin:/usr/bin:/usr/local/bin"; export PATH
 MANPATH="/usr/share/man"; export MANPATH
-
-# man command to test
-: ${man_command="/usr/bin/man"}
 
 # known bugs in older FreeBSD releases (< 15.0-CURRENT)
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
 : ${bug_page_quotes=false}
 
-MANPATH="/usr/share/man"; export MANPATH
+# man command to test
+: ${man_command="/usr/bin/man"}
 
+# OS specific tests for FreeBSD/Linux/MacOS
 uname=$(uname)
 
 # simple error/exit handler for everything
@@ -90,6 +91,7 @@ else
   true
 fi
 
+# searching for more than one manual page
 if $bug_page_spaces_new; then
 $man_command -P cat cat >/dev/null
 $man_command 1 cat >/dev/null
@@ -151,7 +153,7 @@ do
 done
 
 
-# meta shell characters
+# meta shell characters, second round
 if $bug_page_quotes; then
 for i in '`' '$' #'$$' '$1' '$2' '$@'
 do
