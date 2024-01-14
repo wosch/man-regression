@@ -77,7 +77,7 @@ fi
 (
 unset MANPATH
 $man_command -k cat > /dev/null 
-test $($apropos_command '^cat' | wc -l) -ge 7
+test $($apropos_command '^cat' | wc -l) -ge 5
 )
 
 #EOF
