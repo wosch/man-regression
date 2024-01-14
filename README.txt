@@ -1,1 +1,1 @@
-tests for /usr/bin/man
+regression tests for /usr/bin/man
