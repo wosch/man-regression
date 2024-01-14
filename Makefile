@@ -1,4 +1,4 @@
-TESTS= basic
+TESTS= basic apropos
 
 all: ${TESTS}
 
