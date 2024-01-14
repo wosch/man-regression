@@ -86,4 +86,16 @@ test $($apropos_command 'socket' | wc -l) -ge 30
 counter=$($apropos_command 'socket' | wc -l)
 test $($apropos_command -s2 'socket' | wc -l) -le $counter
 
+# test -M flag / -k
+if test $uname = "FreeBSD"; then
+counter=$($man_command -M /usr/share/man -S6 -k 'intro' | wc -l) 
+counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -k 'intro' | wc -l)
+test $counter = $counter2
+fi
+
+# test -M flag / -K (fulltext)
+counter=$($man_command -M /usr/share/man -S6 -K 'intro' | wc -l) 
+counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -K 'intro' | wc -l)
+test $(expr 2 \* $counter) = $counter2
+
 #EOF
