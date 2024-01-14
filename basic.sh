@@ -20,6 +20,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
 : ${bug_page_quotes=false}
+: ${groff_installed=true}
 
 # man command to test
 : ${man_command="/usr/bin/man"}
@@ -174,8 +175,12 @@ $man_command -M $man_dir "d\"e" >/dev/null
 fi
 
 # lesskey requires groff(1) commandn installed
-if [ $uname = "FreeBSD" ]; then
-  if PATH=/bin:/usr/bin $man_command lesskey >/dev/null 2>&1; then
+if test $uname = "FreeBSD" && $groff_installed; then
+  if ! env PATH=/bin:/usr/bin:/usr/local/bin which groff >/dev/null; then
+    echo "Please install groff(1): pkg install groff"
+  fi
+
+  if env PATH=/bin:/usr/bin $man_command lesskey >/dev/null 2>&1; then
     echo "Did you fixed the lesskey(1) manual page?"
     exit 1
   fi
