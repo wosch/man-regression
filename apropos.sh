@@ -66,6 +66,7 @@ $man_command -S6 -K 'games'                  > /dev/null 2>&1 || $bug_page_fullt
 $man_command -S6 -K 'introduction to games'  > /dev/null 2>&1 || $bug_page_fulltext_exit
 $man_command -S6 -K ' introduction to games' > /dev/null 2>&1 || $bug_page_fulltext_exit
 $man_command -S6 -K 'INTRODUCTION TO GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
+$man_command -S6 -K 'INTRODUCTION\s+\S+\s+GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
 
 if test $uname = "FreeBSD"; then
 test $($man_command -S6 -K 'morse' 2>/dev/null | wc -l) -ge 5
@@ -79,5 +80,10 @@ unset MANPATH
 $man_command -k cat > /dev/null 
 test $($apropos_command '^cat' | wc -l) -ge 5
 )
+
+# test -s flag
+test $($apropos_command 'socket' | wc -l) -ge 30
+counter=$($apropos_command 'socket' | wc -l)
+test $($apropos_command -s2 'socket' | wc -l) -le $counter
 
 #EOF
