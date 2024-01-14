@@ -37,6 +37,11 @@ exit_handler ()
   rm -rf $tmpdir
 }
 
+if ! $man_command cat > /dev/null 2>&1; then
+  printf ">>> Something is really wrong. Please check the script\n$man_command cat\n\n" >&2
+  exit 2
+fi
+
 # find path of a manual page
 $man_command -w cat > /dev/null
 
@@ -129,7 +134,7 @@ $man_command cp | gzip >  $man_dir/man1/cp.1.gz
 test $($man_command -M $man_dir -w cp | wc -l) = 1
 
 # meta shell characters
-for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '	'
+for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '	' '+' '~' '^' '!' '%' ':'
 do
   cp $($man_command -w date) "$man_dir/man1/d${i}${i}e.1.gz"
   $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
