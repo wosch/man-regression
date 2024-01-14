@@ -162,4 +162,12 @@ $man_command -M $man_dir "d\"\"e" >/dev/null
 $man_command -M $man_dir "d\"e" >/dev/null
 fi
 
+# lesskey requires groff(1) commandn installed
+if [ $uname = "FreeBSD" ]; then
+  if PATH=/bin:/usr/bin $man_command lesskey >/dev/null 2>&1; then
+    echo "Did you fixed the lesskey(1) manual page?"
+    exit 1
+  fi
+fi
+
 #EOF
