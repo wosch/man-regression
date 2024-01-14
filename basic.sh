@@ -51,8 +51,8 @@ fi
 $man_command -w cat > /dev/null
 
 # debug flag
-$man_command -d cat 2> /dev/null
-$man_command -d -w cat > /dev/null 2>&1
+$man_command -d cat > /dev/null 2>&1
+$man_command -d -w  cat > /dev/null 2>&1
 
 # once
 test $($man_command -w cat | wc -l) = 1
