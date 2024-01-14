@@ -182,8 +182,10 @@ if [ $uname = "FreeBSD" ]; then
 
   PATH=/bin:/usr/bin:/usr/local/bin $man_command -M $man_dir cp >/dev/null
 
+  if $bug_page_quotes; then
   cp $($man_command -w lesskey) "$man_dir/man1/less\"key.1.gz"
   PATH=/bin:/usr/bin:/usr/local/bin $man_command -M $man_dir "less\"key" >/dev/null 2>&1
+  fi
 fi
 
 #EOF
