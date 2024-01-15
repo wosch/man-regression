@@ -113,7 +113,8 @@ test $($apropos_command '^cat' | wc -l) -ge 5
 # test -s flag
 test $($apropos_command 'socket' | wc -l) -ge 30
 counter=$($apropos_command 'socket' | wc -l)
-test $($apropos_command -s2 'socket' | wc -l) -le $counter
+case $uname in FreeBSD ) section=2;; Linux) section=2:3;; *) section=3;; esac
+test $($apropos_command -s${section} 'socket' | wc -l) -le $counter
 
 # test -M flag / -k
 counter=$($man_command -M /usr/share/man -S6 -k 'intro' | wc -l) 
