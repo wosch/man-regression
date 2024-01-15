@@ -33,6 +33,7 @@ MANPATH="/usr/share/man"; export MANPATH
 
 # OS specific tests for FreeBSD/Linux/MacOS
 uname=$(uname)
+release=$(uname -r)
 
 # simple error/exit handler for everything
 trap 'exit_handler' 0
@@ -71,23 +72,27 @@ fi
 
 test $($apropos_command '^cat' | wc -l) -ge 5
 
-if $bug_page_fulltext; then
-$man_command -S6 -K 'games'                  > /dev/null 2>&1 || $bug_page_fulltext_exit
-$man_command -S6 -K 'introduction to games'  > /dev/null 2>&1 || $bug_page_fulltext_exit
-$man_command -S6 -K ' introduction to games' > /dev/null 2>&1 || $bug_page_fulltext_exit
-$man_command -S6 -K 'INTRODUCTION TO GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
-$man_command -S6 -K 'INTRODUCTION\s+\S+\s+GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
-
-if test $uname = "FreeBSD"; then
-  test $($man_command -S6 -K 'morse' 2>/dev/null | wc -l) -ge 5
+# make -K was added in FreeBSD-14.*
+if [ $uname = "FreeBSD" ]; then
+  case $release in 1[0123].* ) bug_page_fulltext=false;; esac
 fi
 
+if $bug_page_fulltext; then
+  $man_command -S6 -K 'games'                  > /dev/null 2>&1 || $bug_page_fulltext_exit
+  $man_command -S6 -K 'introduction to games'  > /dev/null 2>&1 || $bug_page_fulltext_exit
+  $man_command -S6 -K ' introduction to games' > /dev/null 2>&1 || $bug_page_fulltext_exit
+  $man_command -S6 -K 'INTRODUCTION TO GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
+  $man_command -S6 -K 'INTRODUCTION\s+\S+\s+GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
+
+  if test $uname = "FreeBSD"; then
+    test $($man_command -S6 -K 'morse' 2>/dev/null | wc -l) -ge 5
+  fi
 fi
 
 # no MANPATH variable set
 (
 unset MANPATH
-$man_command -k cat > /dev/null 
+$man_command -k cat > /dev/null 2>&1
 test $($apropos_command '^cat' | wc -l) -ge 5
 )
 
@@ -102,9 +107,11 @@ counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -k 'intro' | wc -l)
 test $counter = $counter2
 
 # test -M flag / -K (fulltext)
-case $uname in FreeBSD ) double_m=2;; *) double_m=1;; esac
-counter=$($man_command -M /usr/share/man -S6 -K 'intro' | wc -l) 
-counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -K 'intro' | wc -l)
-test $(expr $double_m \* $counter) = $counter2
+if $bug_page_fulltext; then
+  case $uname in FreeBSD ) double_m=2;; *) double_m=1;; esac
+  counter=$($man_command -M /usr/share/man -S6 -K 'intro' | wc -l) 
+  counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -K 'intro' | wc -l)
+  test $(expr $double_m \* $counter) = $counter2
+fi
 
 #EOF
