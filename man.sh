@@ -27,6 +27,8 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
 : ${bug_page_quotes=false}
+
+# optional package groff
 : ${groff_installed=true}
 
 # man command to test
@@ -37,6 +39,19 @@ uname=$(uname)
 
 # simple error/exit handler for everything
 trap 'exit_handler' 0
+
+if $DEBUG; then
+  cat <<EOF
+PATH=$PATH
+MANPATH=$MANPATH
+bug_page_spaces=$bug_page_spaces
+bug_page_spaces_new=$bug_page_spaces_new
+bug_page_quotes=$bug_page_quotes
+groff_installed=$groff_installed
+man_command=$man_command
+
+EOF
+fi
 
 exit_handler ()
 {
@@ -110,6 +125,7 @@ cp $($man_command -w cat) $man_dir/man1
 $man_command -M $man_dir -w cat >/dev/null
 test $($man_command -M $man_dir -w cat | wc -l) = 1
 
+if $bug_page_spaces; then
 # create manual pages with spaces in filenames
 cp $($man_command -w cat) $man_dir/man1/"c a t.1"
 cp $($man_command -w man) $man_dir/man1/"m a n.1"
@@ -117,8 +133,6 @@ cp $($man_command -w man) $man_dir/man1/"m a n.1"
 # run man(1) on path with spaces
 $man_command $man_dir/man1/"c a t.1" >/dev/null
 
-# run man(1) on page with spaces
-if $bug_page_spaces; then
 test $($man_command -M $man_dir -w "c a t" | wc -l) = 1
 test $($man_command -M $man_dir -w "m a n" | wc -l) = 1
 test $($man_command -M $man_dir -w "c a t" "m a n" | wc -l) = 2
