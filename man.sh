@@ -6,7 +6,7 @@
 #
 # for developing, try:
 #
-#   env man_command="sh /usr/src/usr.bin/man/man.sh" ./basic.sh 
+#   env man_command="sh /usr/src/usr.bin/man/man.sh" ./man.sh 
 #
 # in case of an error run this script with: env DEBUG=true
 #
