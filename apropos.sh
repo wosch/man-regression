@@ -35,6 +35,20 @@ MANPATH="/usr/share/man"; export MANPATH
 uname=$(uname)
 release=$(uname -r)
 
+if $DEBUG; then
+  cat <<EOF
+PATH=$PATH
+MANPATH=$MANPATH
+bug_page_spaces=$bug_page_spaces
+bug_page_spaces_new=$bug_page_spaces_new
+bug_page_quotes=$bug_page_quotes
+groff_installed=$groff_installed
+man_command=$man_command
+apropos_command=$apropos_command
+
+EOF
+fi
+
 # simple error/exit handler for everything
 trap 'exit_handler' 0
 
