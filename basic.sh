@@ -88,17 +88,6 @@ fi
 # no MANPATH variable set
 ( unset MANPATH; $man_command -w cat > /dev/null )
 
-# apropos
-$man_command -k socket >/dev/null
-test $($man_command -k socket 2>/dev/null | wc -l) -ge 7
-
-# expect a non zero exit if nothing was found
-if $man_command -k socket12345 >/dev/null 2>&1; then
-  false
-else
-  true
-fi
-
 # searching for more than one manual page
 if $bug_page_spaces_new; then
 $man_command -P cat cat >/dev/null

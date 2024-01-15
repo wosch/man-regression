@@ -6,7 +6,7 @@
 #
 # for developing, try:
 #
-#   env man_command="sh /usr/src/usr.bin/man/man.sh" ./basic.sh 
+#   env man_command="sh /usr/src/usr.bin/man/man.sh" ./apropos.sh 
 #
 # in case of an error run this script with: env DEBUG=true
 #
@@ -59,6 +59,16 @@ fi
 $man_command -k '^cat' > /dev/null
 $apropos_command '^cat' > /dev/null
 
+$man_command -k socket >/dev/null
+test $($man_command -k socket 2>/dev/null | wc -l) -ge 7
+
+# expect a non zero exit if nothing was found
+if $man_command -k socket12345 >/dev/null 2>&1; then
+  false
+else
+  true
+fi
+
 test $($apropos_command '^cat' | wc -l) -ge 5
 
 if $bug_page_fulltext; then
@@ -69,7 +79,7 @@ $man_command -S6 -K 'INTRODUCTION TO GAMES'  > /dev/null 2>&1 || $bug_page_fullt
 $man_command -S6 -K 'INTRODUCTION\s+\S+\s+GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
 
 if test $uname = "FreeBSD"; then
-test $($man_command -S6 -K 'morse' 2>/dev/null | wc -l) -ge 5
+  test $($man_command -S6 -K 'morse' 2>/dev/null | wc -l) -ge 5
 fi
 
 fi
