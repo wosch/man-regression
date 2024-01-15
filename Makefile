@@ -1,4 +1,4 @@
-TESTS= basic apropos
+TESTS= man apropos
 
 all: ${TESTS}
 
