@@ -188,6 +188,9 @@ fi
 if test $uname = "FreeBSD" && $groff_installed; then
   if ! env PATH=/bin:/usr/bin:/usr/local/bin which groff >/dev/null; then
     echo "Please install groff(1): pkg install groff"
+    echo "or run with: env groff_installed=false $0 $@"
+    echo ""
+    exit 1
   fi
 
   if env PATH=/bin:/usr/bin $man_command lesskey >/dev/null 2>&1; then
