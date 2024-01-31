@@ -26,7 +26,7 @@ MANPATH="/usr/share/man"; export MANPATH
 # known bugs in older FreeBSD releases (< 15.0-CURRENT)
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
-: ${bug_page_quotes=false}
+: ${bug_page_quotes=true}
 
 # optional package groff
 : ${groff_installed=true}
