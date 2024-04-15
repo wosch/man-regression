@@ -28,6 +28,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_page_spaces_new=true}
 : ${bug_page_quotes=true}
 : ${bug_corrupt_gzip=true}
+: ${bug_huge_manpagep=true}
 
 # optional package groff
 : ${groff_installed=true}
@@ -211,6 +212,18 @@ if test $uname = "FreeBSD" && $groff_installed; then
   cp $($man_command -w lesskey) "$man_dir/man1/less\"key.1.gz"
   env PATH=/bin:/usr/bin:/usr/local/bin $man_command -M $man_dir "less\"key" >/dev/null 2>&1
   fi
+fi
+
+# man(1) should work with huge manual pages
+# may reproce warnings due SIGPIPE
+if $bug_huge_manpagep; then
+# test with tcsh or bash page if available
+if $man_command -w tcsh >/dev/null 2>&1; then
+  $man_command tcsh >/dev/null
+fi
+if $man_command -w bash >/dev/null 2>&1; then
+  $man_command bash >/dev/null
+fi
 fi
 
 # a corrupt compressed file should report an error
