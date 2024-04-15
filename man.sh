@@ -230,19 +230,29 @@ fi
 if $bug_corrupt_gzip; then
 $man_command sh > $man_dir/man1/sh.1
 gzip < $man_dir/man1/sh.1 2>/dev/null | head -n1 > $man_dir/man1/sh.1.gz
+rm -f $man_dir/man1/sh.1
+
 if gzip -t $man_dir/man1/sh.1.gz >/dev/null 2>&1; then
   echo "Oops, please rewrite the test"
   exit 1
 fi
 
 if $man_command $man_dir/man1/sh.1.gz >/dev/null 2>&1; then
-  echo "calling man (1) on a broken gzip'd file should report an error"
+  echo "calling man(1) on a broken gzip'd file should report an error"
+  exit 1
+fi
+if $man_command -M $man_dir sh >/dev/null 2>&1; then
+  echo "calling man(1) -M on a broken gzip'd file should report an error"
   exit 1
 fi
 
 touch $man_dir/man1/foobar.1.gz
 if $man_command $man_dir/man1/foobar.1.gz >/dev/null 2>&1; then
-  echo "calling man (1) on a empty gzip'd file should report an error"
+  echo "calling man(1) on a empty gzip'd file should report an error"
+  exit 1
+fi
+if $man_command -M $man_dir foobar >/dev/null 2>&1; then
+  echo "calling man(1) -M on a empty gzip'd file should report an error"
   exit 1
 fi
 fi
