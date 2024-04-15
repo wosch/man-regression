@@ -239,6 +239,12 @@ if $man_command $man_dir/man1/sh.1.gz >/dev/null 2>&1; then
   echo "calling man (1) on a broken gzip'd file should report an error"
   exit 1
 fi
+
+touch $man_dir/man1/foobar.1.gz
+if $man_command $man_dir/man1/foobar.1.gz >/dev/null 2>&1; then
+  echo "calling man (1) on a empty gzip'd file should report an error"
+  exit 1
+fi
 fi
 
 #EOF
