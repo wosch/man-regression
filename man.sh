@@ -184,6 +184,12 @@ $man_command -M $man_dir "d\"\"e" >/dev/null
 $man_command -M $man_dir "d\"e" >/dev/null
 fi
 
+# no arguments
+if $man_command >/dev/null 2>&1; then
+  echo "calling man(1) without arguments should be a failure"
+  exit 1
+fi
+
 # lesskey requires groff(1) commandn installed
 if test $uname = "FreeBSD" && $groff_installed; then
   if ! env PATH=/bin:/usr/bin:/usr/local/bin which groff >/dev/null; then
