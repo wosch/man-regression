@@ -27,6 +27,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
 : ${bug_page_quotes=true}
+: ${bug_corrupt_gzip=true}
 
 # optional package groff
 : ${groff_installed=true}
@@ -210,6 +211,21 @@ if test $uname = "FreeBSD" && $groff_installed; then
   cp $($man_command -w lesskey) "$man_dir/man1/less\"key.1.gz"
   env PATH=/bin:/usr/bin:/usr/local/bin $man_command -M $man_dir "less\"key" >/dev/null 2>&1
   fi
+fi
+
+# a corrupt compressed file should report an error
+if $bug_corrupt_gzip; then
+$man_command sh > $man_dir/man1/sh.1
+gzip < $man_dir/man1/sh.1 2>/dev/null | head -n1 > $man_dir/man1/sh.1.gz
+if gzip -t $man_dir/man1/sh.1.gz >/dev/null 2>&1; then
+  echo "Oops, please rewrite the test"
+  exit 1
+fi
+
+if $man_command $man_dir/man1/sh.1.gz >/dev/null 2>&1; then
+  echo "calling man (1) on a broken gzip'd file should report an error"
+  exit 1
+fi
 fi
 
 #EOF
