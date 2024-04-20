@@ -29,6 +29,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_page_quotes=true}
 : ${bug_corrupt_gzip=true}
 : ${bug_huge_manpage=true}
+: ${bug_ulimit_cpu=true}
 
 # optional package groff
 : ${groff_installed=true}
@@ -224,6 +225,16 @@ fi
 if $man_command -w bash >/dev/null 2>&1; then
   $man_command bash >/dev/null
 fi
+fi
+
+# if man(1) gets killed by a CPU limit, it need to stop with a non-zero exit status
+# this test will runs for at least a CPU second
+if $bug_ulimit_cpu; then
+  zcat /usr/share/man/man1/*.gz | gzip > $man_dir/man1/huge.1.gz
+  if ( ulimit -t 1; $man_command $man_dir/man1/huge.1.gz >/dev/null 2>&1 ); then
+    echo "man got killed, but exit status is zero"
+    exit 1
+  fi
 fi
 
 # a corrupt compressed file should report an error
