@@ -28,7 +28,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_page_spaces_new=true}
 : ${bug_page_quotes=true}
 : ${bug_corrupt_gzip=true}
-: ${bug_huge_manpagep=true}
+: ${bug_huge_manpage=true}
 
 # optional package groff
 : ${groff_installed=true}
@@ -216,7 +216,7 @@ fi
 
 # man(1) should work with huge manual pages
 # may reproce warnings due SIGPIPE
-if $bug_huge_manpagep; then
+if $bug_huge_manpage; then
 # test with tcsh or bash page if available
 if $man_command -w tcsh >/dev/null 2>&1; then
   $man_command tcsh >/dev/null
