@@ -48,13 +48,11 @@ if $DEBUG; then
   cat <<EOF
 PATH=$PATH
 MANPATH=$MANPATH
-bug_page_spaces=$bug_page_spaces
-bug_page_spaces_new=$bug_page_spaces_new
-bug_page_quotes=$bug_page_quotes
 groff_installed=$groff_installed
 man_command=$man_command
 
 EOF
+set | grep '^bug_'
 fi
 
 exit_handler ()
