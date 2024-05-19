@@ -286,6 +286,18 @@ if $bug_so; then
     echo "cound not find .so file / gzip" >&2
     exit 1
   fi
+
+  if ! $man_command -w $man_dir/man1/kitty.1.gz | grep '^/.*/dog.1.gz$' >/dev/null; then
+    echo "man -w: cound not find .so file" >&2
+    exit 1
+  fi
+
+  if ! $man_command $man_dir/man1/kitty.1.gz >/dev/null; then
+    echo "man: cound not find .so file" >&2
+    exit 1
+  fi
+
+
   )
 fi
 
