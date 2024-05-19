@@ -14,10 +14,7 @@
 set -e
 
 # run in debug mode
-: ${DEBUG=false}
-if $DEBUG; then
-  set -x
-fi
+: ${debug=0}
 
 # set default values for path
 PATH="/bin:/usr/bin:/usr/local/bin"; export PATH
@@ -45,7 +42,7 @@ uname=$(uname)
 # simple error/exit handler for everything
 trap 'exit_handler' 0
 
-if $DEBUG; then
+if [ $debug -ge 1 ]; then
   cat <<EOF
 PATH=$PATH
 MANPATH=$MANPATH
@@ -53,8 +50,18 @@ groff_installed=$groff_installed
 man_command=$man_command
 
 EOF
-set | grep '^bug_'
+
+  set | grep '^bug_'
+  echo ""
 fi
+
+# Usage: decho "string" [debuglevel]
+# Echoes to stderr string prefaced with -- if high enough debuglevel.
+decho() {
+  if [ $debug -ge ${2:-1} ]; then
+    echo "-- $1" >&2
+  fi
+}
 
 exit_handler ()
 {
@@ -62,8 +69,9 @@ exit_handler ()
   if [ $ret = 0 ]; then
     echo "All man(1) tests are successfull done."
   else
+    echo ""
     echo "A test failed, status=$ret"
-    echo "Please run again: env DEBUG=true $0 $@"
+    echo "Please run again: env debug=1 $0 $@"
   fi
 
   rm -rf $tmpdir
