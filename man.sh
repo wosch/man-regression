@@ -30,6 +30,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_corrupt_gzip=true}
 : ${bug_huge_manpage=true}
 : ${bug_ulimit_cpu=true}
+: ${bug_so=true}
 
 # optional package groff
 : ${groff_installed=true}
@@ -266,6 +267,26 @@ if $man_command -M $man_dir foobar >/dev/null 2>&1; then
   echo "calling man(1) -M on a empty gzip'd file should report an error"
   exit 1
 fi
+fi
+
+# .so man1/bla.1 
+# filename space bug / exists() function with empty arguments
+if $bug_so; then
+  (
+  cd "$man_dir"
+  cp $($man_command -w cat) "$man_dir/man1/dog.1.gz"
+  echo ".so man1/dog.1" > $man_dir/man1/kitty.1
+  if ! $man_command -M $man_dir -w kitty | grep '^/.*/dog.1.gz$' >/dev/null; then
+    echo "cound not find .so file" >&2
+    exit 1
+  fi
+
+  gzip -f $man_dir/man1/kitty.1
+  if ! $man_command -M $man_dir -w kitty | grep '^/.*/dog.1.gz$' >/dev/null; then
+    echo "cound not find .so file / gzip" >&2
+    exit 1
+  fi
+  )
 fi
 
 #EOF
