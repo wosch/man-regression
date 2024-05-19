@@ -162,7 +162,7 @@ test $($man_command -M $man_dir -w cp | wc -l) = 1
 # meta shell characters
 for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '	' '+' '~' '^' '!' '%' ':' '@'
 do
-  cp $($man_command -w date) "$man_dir/man1/d${i}${i}e.1.gz"
+  cp $($man_command -w cal) "$man_dir/man1/d${i}${i}e.1.gz"
   $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
   $man_command -M $man_dir -- "d${i}${i}e" >/dev/null
 done
@@ -172,7 +172,7 @@ done
 if $bug_page_quotes; then
 for i in '`' '$' '$$' '$1' '$2' '$@' '$*'
 do
-  cp $($man_command -w date) "$man_dir/man1/d${i}${i}e.1.gz"
+  cp $($man_command -w cal) "$man_dir/man1/d${i}${i}e.1.gz"
   $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
   $man_command -M $man_dir -- "d${i}${i}e" >/dev/null
 done
@@ -180,8 +180,8 @@ fi
 
 # double quotes
 if $bug_page_quotes; then
-cp $($man_command -w date) "$man_dir/man1/d\"\"e.1.gz"
-cp $($man_command -w date) "$man_dir/man1/d\"e.1.gz"
+cp $($man_command -w cal) "$man_dir/man1/d\"\"e.1.gz"
+cp $($man_command -w cal) "$man_dir/man1/d\"e.1.gz"
 $man_command "$man_dir/man1/d\"\"e.1.gz" >/dev/null
 $man_command "$man_dir/man1/d\"e.1.gz" >/dev/null
 $man_command -M $man_dir "d\"\"e" >/dev/null
