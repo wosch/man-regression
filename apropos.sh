@@ -8,7 +8,7 @@
 #
 #   env man_command="sh /usr/src/usr.bin/man/man.sh" ./apropos.sh 
 #
-# in case of an error run this script with: env DEBUG=true
+# in case of an error run this script with: env debug=2
 #
 
 set -e
@@ -65,7 +65,9 @@ exit_handler ()
   else
     echo ""
     echo "A test failed, status=$ret"
-    echo "Please run again: env DEBUG=true $0 $@"
+    if [ $debug -le 1 ]; then
+      echo "Please run again: env debug=2 $0 $@"
+    fi
   fi
 
   rm -rf $tmpdir

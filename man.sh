@@ -8,7 +8,7 @@
 #
 #   env man_command="sh /usr/src/usr.bin/man/man.sh" ./man.sh 
 #
-# in case of an error run this script with: env DEBUG=true
+# in case of an error run this script with: env debug=2
 #
 
 set -e
