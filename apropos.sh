@@ -14,10 +14,7 @@
 set -e
 
 # run in debug mode
-: ${DEBUG=false}
-if $DEBUG; then
-  set -x
-fi
+: ${debug=0}
 
 # set default values for path
 PATH="/bin:/usr/bin:/usr/local/bin"; export PATH
@@ -35,29 +32,38 @@ MANPATH="/usr/share/man"; export MANPATH
 uname=$(uname)
 release=$(uname -r)
 
-if $DEBUG; then
+if [ $debug -ge 1 ]; then
   cat <<EOF
 PATH=$PATH
 MANPATH=$MANPATH
-bug_page_spaces=$bug_page_spaces
-bug_page_spaces_new=$bug_page_spaces_new
-bug_page_quotes=$bug_page_quotes
 groff_installed=$groff_installed
 man_command=$man_command
 apropos_command=$apropos_command
 
 EOF
+
+  set | grep '^bug_'
+  echo ""
 fi
 
 # simple error/exit handler for everything
 trap 'exit_handler' 0
 
+# Usage: decho "string" [debuglevel]
+# Echoes to stderr string prefaced with -- if high enough debuglevel.
+decho() {
+  if [ $debug -ge ${2:-1} ]; then
+    echo "-- $1" >&2
+  fi
+}
+
 exit_handler ()
 {
   local ret=$?
   if [ $ret = 0 ]; then
-    echo "All apropos(1) tests are successfull done."
+    decho "All apropos(1) tests are successfull done."
   else
+    echo ""
     echo "A test failed, status=$ret"
     echo "Please run again: env DEBUG=true $0 $@"
   fi
@@ -70,14 +76,15 @@ if ! $man_command -k cat > /dev/null 2>&1; then
   exit 2
 fi
 
-# find path of a manual page
+decho "find path of a manual page: man -k"
 $man_command -k '^cat' > /dev/null
+decho "find path of a manual page: apropos"
 $apropos_command '^cat' > /dev/null
 
 $man_command -k socket >/dev/null
 test $($man_command -k socket 2>/dev/null | wc -l) -ge 7
 
-# expect a non zero exit if nothing was found
+decho "expect a non zero exit if nothing was found"
 if $man_command -k socket12345 >/dev/null 2>&1; then
   false
 else
@@ -92,6 +99,7 @@ if [ $uname = "FreeBSD" ]; then
 fi
 
 if $bug_page_fulltext; then
+  decho "bug_page_fulltext"
   $man_command -S6 -K 'games'                  > /dev/null 2>&1 || $bug_page_fulltext_exit
   $man_command -S6 -K 'introduction to games'  > /dev/null 2>&1 || $bug_page_fulltext_exit
   $man_command -S6 -K ' introduction to games' > /dev/null 2>&1 || $bug_page_fulltext_exit
@@ -103,25 +111,25 @@ if $bug_page_fulltext; then
   fi
 fi
 
-# no MANPATH variable set
+decho "no MANPATH variable set"
 (
 unset MANPATH
 $man_command -k cat > /dev/null 2>&1
 test $($apropos_command '^cat' | wc -l) -ge 5
 )
 
-# test -s flag
+decho "test -s flag"
 test $($apropos_command 'socket' | wc -l) -ge 30
 counter=$($apropos_command 'socket' | wc -l)
 case $uname in FreeBSD ) section=2;; Linux) section=2:3;; *) section=3;; esac
 test $($apropos_command -s${section} 'socket' | wc -l) -le $counter
 
-# test -M flag / -k
+decho "test -M flag / -k"
 counter=$($man_command -M /usr/share/man -S6 -k 'intro' | wc -l) 
 counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -k 'intro' | wc -l)
 test $counter = $counter2
 
-# test -M flag / -K (fulltext)
+decho "test -M flag / -K (fulltext)"
 if $bug_page_fulltext; then
   case $uname in FreeBSD ) double_m=2;; *) double_m=1;; esac
   counter=$($man_command -M /usr/share/man -S6 -K 'intro' | wc -l) 
