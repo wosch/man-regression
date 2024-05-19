@@ -1,4 +1,4 @@
-Regression tests for /usr/bin/man on FreeBSD
+Regression tests for /usr/bin/man on FreeBSD (stable/current)
 
 --
-wosch, Jan 2024
+wosch, May 2024
