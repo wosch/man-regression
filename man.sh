@@ -26,6 +26,7 @@ MANPATH="/usr/share/man"; export MANPATH
 # known bugs in older FreeBSD releases (< 15.0-CURRENT)
 : ${bug_page_spaces=true}
 : ${bug_page_spaces_new=true}
+: ${bug_meta_characters=true}
 : ${bug_page_quotes=true}
 : ${bug_corrupt_gzip=true}
 : ${bug_huge_manpage=true}
@@ -158,6 +159,7 @@ $man_command cp | gzip >  $man_dir/man1/cp.1.gz
 test $($man_command -M $man_dir -w cp | wc -l) = 1
 
 # meta shell characters
+if $bug_meta_characters; then
 for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '	' '+' '~' '^' '!' '%' ':' '@'
 do
   cp $($man_command -w cal) "$man_dir/man1/d${i}${i}e.1.gz"
@@ -174,6 +176,7 @@ do
   $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
   $man_command -M $man_dir -- "d${i}${i}e" >/dev/null
 done
+fi
 fi
 
 # double quotes
