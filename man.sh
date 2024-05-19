@@ -71,8 +71,8 @@ exit_handler ()
   else
     echo ""
     echo "A test failed, status=$ret"
-    if [ $debug -le 0 ]; then
-      echo "Please run again: env debug=1 $0 $@"
+    if [ $debug -le 1 ]; then
+      echo "Please run again: env debug=2 $0 $@"
     fi
   fi
 
