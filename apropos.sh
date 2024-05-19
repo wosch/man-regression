@@ -61,7 +61,7 @@ exit_handler ()
 {
   local ret=$?
   if [ $ret = 0 ]; then
-    decho "All apropos(1) tests are successfull done."
+    decho ">>> All apropos(1) tests are successfull done <<<"
   else
     echo ""
     echo "A test failed, status=$ret"
@@ -98,8 +98,8 @@ if [ $uname = "FreeBSD" ]; then
   case $release in 1[0123].* ) bug_fulltext=false;; esac
 fi
 
+decho "bug_fulltext=$bug_fulltext bug_fulltext_exit=$bug_fulltext_exit" 2
 if $bug_fulltext; then
-  decho "bug_fulltext"
   $man_command -S6 -K 'games'                  > /dev/null 2>&1 || $bug_fulltext_exit
   $man_command -S6 -K 'introduction to games'  > /dev/null 2>&1 || $bug_fulltext_exit
   $man_command -S6 -K ' introduction to games' > /dev/null 2>&1 || $bug_fulltext_exit
@@ -129,8 +129,10 @@ counter=$($man_command -M /usr/share/man -S6 -k 'intro' | wc -l)
 counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -k 'intro' | wc -l)
 test $counter = $counter2
 
-decho "test -M flag / -K (fulltext)"
+decho "bug_fulltext=$bug_fulltext" 2
 if $bug_fulltext; then
+  decho "test -M flag / -K (fulltext)"
+
   case $uname in FreeBSD ) double_m=2;; *) double_m=1;; esac
   counter=$($man_command -M /usr/share/man -S6 -K 'intro' | wc -l) 
   counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -K 'intro' | wc -l)

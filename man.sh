@@ -67,7 +67,7 @@ exit_handler ()
 {
   local ret=$?
   if [ $ret = 0 ]; then
-    decho "All man(1) tests are successfull done."
+    decho ">>> All man(1) tests are successfull done <<<"
   else
     echo ""
     echo "A test failed, status=$ret"
@@ -95,9 +95,9 @@ $man_command -d -w  cat > /dev/null 2>&1
 decho "once"
 test $($man_command -w cat | wc -l) = 1
 
-decho "twice"
+decho "bug_spaces_new=$bug_spaces_new" 2
 if $bug_spaces_new; then
-  decho "bug_spaces_new"
+  decho "twice"
   test $($man_command -w cat man | wc -l) = 2
 fi
 
@@ -141,6 +141,7 @@ decho "basic cat"
 $man_command -M $man_dir -w cat >/dev/null
 test $($man_command -M $man_dir -w cat | wc -l) = 1
 
+decho "bug_spaces=$bug_spaces" 2
 if $bug_spaces; then
   # create manual pages with spaces in filenames
   cp $($man_command -w cat) $man_dir/man1/"c a t.1"
@@ -171,9 +172,9 @@ $man_command cp >  $man_dir/man1/cp.1
 $man_command cp | gzip >  $man_dir/man1/cp.1.gz
 test $($man_command -M $man_dir -w cp | wc -l) = 1
 
-# meta shell characters
+decho "bug_meta_characters=$bug_meta_characters" 2
 if $bug_meta_characters; then
-  decho "bug_meta_characters"
+  decho "meta shell characters"
 
   for i in ';' "'" '(' ')' '[' ']' '&' '>' '<' '#' '|' '*' '_' '-' '?' ' ' '	' '+' '~' '^' '!' '%' ':' '@'
   do
@@ -183,6 +184,7 @@ if $bug_meta_characters; then
   done
 fi
 
+decho "bug_quotes=$bug_quotes" 2
 if $bug_quotes; then
   decho "meta shell characters, second round"
   for i in '`' '$' '$$' '$1' '$2' '$@' '$*'
@@ -191,9 +193,7 @@ if $bug_quotes; then
     $man_command "$man_dir/man1/d${i}${i}e.1.gz" >/dev/null
     $man_command -M $man_dir -- "d${i}${i}e" >/dev/null
   done
-fi
 
-if $bug_quotes; then
   decho "double quotes"
   cp $($man_command -w cal) "$man_dir/man1/d\"\"e.1.gz"
   cp $($man_command -w cal) "$man_dir/man1/d\"e.1.gz"
@@ -232,6 +232,7 @@ if test $uname = "FreeBSD" && $groff_installed; then
   fi
 fi
 
+decho "bug_huge_manpage=$bug_huge_manpage" 2
 if $bug_huge_manpage; then
   # may reproce warnings due SIGPIPE
   decho "man(1) should work with huge manual pages"
@@ -245,6 +246,7 @@ if $bug_huge_manpage; then
   fi
 fi
 
+decho "bug_ulimit_cpu=$bug_ulimit_cpu" 2
 if $bug_ulimit_cpu; then
   decho "if man(1) gets killed by a CPU limit, it need to stop with a non-zero exit status"
   # this test will runs for at least a CPU second
@@ -256,6 +258,7 @@ if $bug_ulimit_cpu; then
   fi
 fi
 
+decho "bug_corrupt_gzip=$bug_corrupt_gzip" 2
 if $bug_corrupt_gzip; then
   decho "a corrupt compressed file should report an error"
 
@@ -288,6 +291,7 @@ if $bug_corrupt_gzip; then
   fi
 fi
 
+decho "bug_so=$bug_so" 2
 if $bug_so; then
   decho ".so man1/bla.1 filename space bug"
   # filename space bug / exists() function with empty arguments
