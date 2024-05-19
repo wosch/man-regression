@@ -14,15 +14,15 @@
 set -e
 
 # run in debug mode
-: ${debug=0}
+: ${debug=1}
 
 # set default values for path
 PATH="/bin:/usr/bin:/usr/local/bin"; export PATH
 MANPATH="/usr/share/man"; export MANPATH
 
 # known bugs in older FreeBSD releases (< 15.0-CURRENT)
-: ${bug_page_fulltext=true}
-: ${bug_page_fulltext_exit=true}
+: ${bug_fulltext=true}
+: ${bug_fulltext_exit=true}
 
 # man command to test
 : ${man_command="/usr/bin/man"}
@@ -95,16 +95,16 @@ test $($apropos_command '^cat' | wc -l) -ge 5
 
 # make -K was added in FreeBSD-14.*
 if [ $uname = "FreeBSD" ]; then
-  case $release in 1[0123].* ) bug_page_fulltext=false;; esac
+  case $release in 1[0123].* ) bug_fulltext=false;; esac
 fi
 
-if $bug_page_fulltext; then
-  decho "bug_page_fulltext"
-  $man_command -S6 -K 'games'                  > /dev/null 2>&1 || $bug_page_fulltext_exit
-  $man_command -S6 -K 'introduction to games'  > /dev/null 2>&1 || $bug_page_fulltext_exit
-  $man_command -S6 -K ' introduction to games' > /dev/null 2>&1 || $bug_page_fulltext_exit
-  $man_command -S6 -K 'INTRODUCTION TO GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
-  $man_command -S6 -K 'INTRODUCTION\s+\S+\s+GAMES'  > /dev/null 2>&1 || $bug_page_fulltext_exit
+if $bug_fulltext; then
+  decho "bug_fulltext"
+  $man_command -S6 -K 'games'                  > /dev/null 2>&1 || $bug_fulltext_exit
+  $man_command -S6 -K 'introduction to games'  > /dev/null 2>&1 || $bug_fulltext_exit
+  $man_command -S6 -K ' introduction to games' > /dev/null 2>&1 || $bug_fulltext_exit
+  $man_command -S6 -K 'INTRODUCTION TO GAMES'  > /dev/null 2>&1 || $bug_fulltext_exit
+  $man_command -S6 -K 'INTRODUCTION\s+\S+\s+GAMES'  > /dev/null 2>&1 || $bug_fulltext_exit
 
   if test $uname = "FreeBSD"; then
     test $($man_command -S6 -K 'morse' 2>/dev/null | wc -l) -ge 5
@@ -130,7 +130,7 @@ counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -k 'intro' | wc -l)
 test $counter = $counter2
 
 decho "test -M flag / -K (fulltext)"
-if $bug_page_fulltext; then
+if $bug_fulltext; then
   case $uname in FreeBSD ) double_m=2;; *) double_m=1;; esac
   counter=$($man_command -M /usr/share/man -S6 -K 'intro' | wc -l) 
   counter2=$($man_command -M /usr/share/man:/usr/share/man -S6 -K 'intro' | wc -l)

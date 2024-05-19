@@ -14,17 +14,17 @@
 set -e
 
 # run in debug mode
-: ${debug=0}
+: ${debug=1}
 
 # set default values for path
 PATH="/bin:/usr/bin:/usr/local/bin"; export PATH
 MANPATH="/usr/share/man"; export MANPATH
 
 # known bugs in older FreeBSD releases (< 15.0-CURRENT)
-: ${bug_page_spaces=true}
-: ${bug_page_spaces_new=true}
+: ${bug_spaces=true}
+: ${bug_spaces_new=true}
 : ${bug_meta_characters=true}
-: ${bug_page_quotes=true}
+: ${bug_quotes=true}
 : ${bug_corrupt_gzip=true}
 : ${bug_huge_manpage=true}
 : ${bug_ulimit_cpu=true}
@@ -96,8 +96,8 @@ decho "once"
 test $($man_command -w cat | wc -l) = 1
 
 decho "twice"
-if $bug_page_spaces_new; then
-  decho "bug_page_spaces_new"
+if $bug_spaces_new; then
+  decho "bug_spaces_new"
   test $($man_command -w cat man | wc -l) = 2
 fi
 
@@ -119,7 +119,7 @@ decho "no MANPATH variable set"
 ( unset MANPATH; $man_command -w cat > /dev/null )
 
 decho "searching for more than one manual page"
-if $bug_page_spaces_new; then
+if $bug_spaces_new; then
   $man_command -P cat cat >/dev/null
   $man_command 1 cat >/dev/null
   $man_command -M /usr/share/man:/usr/share/man -a 1 cat man >/dev/null
@@ -141,7 +141,7 @@ decho "basic cat"
 $man_command -M $man_dir -w cat >/dev/null
 test $($man_command -M $man_dir -w cat | wc -l) = 1
 
-if $bug_page_spaces; then
+if $bug_spaces; then
   # create manual pages with spaces in filenames
   cp $($man_command -w cat) $man_dir/man1/"c a t.1"
   cp $($man_command -w man) $man_dir/man1/"m a n.1"
@@ -183,7 +183,7 @@ if $bug_meta_characters; then
   done
 fi
 
-if $bug_page_quotes; then
+if $bug_quotes; then
   decho "meta shell characters, second round"
   for i in '`' '$' '$$' '$1' '$2' '$@' '$*'
   do
@@ -193,7 +193,7 @@ if $bug_page_quotes; then
   done
 fi
 
-if $bug_page_quotes; then
+if $bug_quotes; then
   decho "double quotes"
   cp $($man_command -w cal) "$man_dir/man1/d\"\"e.1.gz"
   cp $($man_command -w cal) "$man_dir/man1/d\"e.1.gz"
@@ -226,7 +226,7 @@ if test $uname = "FreeBSD" && $groff_installed; then
 
   env PATH=/bin:/usr/bin:/usr/local/bin $man_command -M $man_dir cp >/dev/null
 
-  if $bug_page_quotes; then
+  if $bug_quotes; then
   cp $($man_command -w lesskey) "$man_dir/man1/less\"key.1.gz"
   env PATH=/bin:/usr/bin:/usr/local/bin $man_command -M $man_dir "less\"key" >/dev/null 2>&1
   fi
