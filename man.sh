@@ -247,18 +247,6 @@ if $bug_huge_manpage; then
   fi
 fi
 
-decho "bug_ulimit_cpu=$bug_ulimit_cpu" 2
-if $bug_ulimit_cpu; then
-  decho "if man(1) gets killed by a CPU limit, it need to stop with a non-zero exit status"
-  # this test will runs for at least a CPU second
-
-  zcat /usr/share/man/man1/*.gz | gzip > $man_dir/man1/huge.1.gz
-  if ( ulimit -t 1; $man_command $man_dir/man1/huge.1.gz >/dev/null 2>&1 ); then
-    echo "man got killed, but exit status is zero"
-    exit 1
-  fi
-fi
-
 decho "bug_corrupt_gzip=$bug_corrupt_gzip" 2
 if $bug_corrupt_gzip; then
   decho "a corrupt compressed file should report an error"
@@ -342,5 +330,18 @@ EOF
     exit 1
   fi
 fi
+
+decho "bug_ulimit_cpu=$bug_ulimit_cpu" 2
+if $bug_ulimit_cpu; then
+  decho "if man(1) gets killed by a CPU limit, it need to stop with a non-zero exit status"
+  # this test will runs for at least a CPU second
+
+  zcat /usr/share/man/man1/*.gz | gzip > $man_dir/man1/huge.1.gz
+  if ( ulimit -t 1; $man_command $man_dir/man1/huge.1.gz >/dev/null 2>&1 ); then
+    echo "man got killed, but exit status is zero"
+    exit 1
+  fi
+fi
+
 
 #EOF
