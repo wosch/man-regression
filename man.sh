@@ -29,6 +29,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_huge_manpage=true}
 : ${bug_ulimit_cpu=true}
 : ${bug_so=true}
+: ${bug_so_firstline=true}
 
 # optional package groff
 : ${groff_installed=true}
@@ -321,6 +322,25 @@ if $bug_so; then
     exit 1
   fi
   )
+fi
+
+decho "bug_so_firstline=$bug_so_firstline" 2
+if $bug_so_firstline; then
+  decho ".so man1/bla.1 firstline"
+  cp -f $($man_command -w cat) "$man_dir/man1/dog.1.gz"
+
+  cat << 'EOF' > $man_dir/man1/charly.1
+.\" copyright
+.\"
+.\" 
+
+.so man1/dog.1
+EOF
+
+  if ! $man_command -M $man_dir -w charly | grep '^/.*/dog.1.gz$' >/dev/null; then
+    echo "cound not find .so file after comments / spaces" >&2
+    exit 1
+  fi
 fi
 
 #EOF
