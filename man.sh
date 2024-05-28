@@ -30,6 +30,7 @@ MANPATH="/usr/share/man"; export MANPATH
 : ${bug_ulimit_cpu=true}
 : ${bug_so=true}
 : ${bug_so_firstline=true}
+: ${bug_so_firstline_relative=true}
 
 # optional package groff
 : ${groff_installed=true}
@@ -187,7 +188,7 @@ fi
 
 decho "bug_quotes=$bug_quotes" 2
 if $bug_quotes; then
-  decho "meta shell characters, second round"
+  decho "quotes: meta shell characters, second round"
   for i in '`' '$' '$$' '$1' '$2' '$@' '$*'
   do
     cp $($man_command -w cal) "$man_dir/man1/d${i}${i}e.1.gz"
@@ -327,6 +328,24 @@ EOF
 
   if ! $man_command -M $man_dir -w charly | grep '^/.*/dog.1.gz$' >/dev/null; then
     echo "cound not find .so file after comments / spaces" >&2
+    exit 1
+  fi
+fi
+
+decho "bug_so_firstline=$bug_so_firstline_relative" 2
+if $bug_so_firstline_relative; then
+  decho ".so /usr/share/lib/tmac/sml firstline"
+
+  cat << 'EOF' > $man_dir/man1/charly.1
+.\" copyright
+.\"
+.\" 
+.so /usr/share/lib/tmac/sml
+\." man page continue
+EOF
+
+  if ! $man_command -M $man_dir -w charly > /dev/null 2>&1; then
+    echo "do not follow absolute path in .so /etc/passwd" >&2
     exit 1
   fi
 fi
