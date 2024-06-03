@@ -283,9 +283,7 @@ fi
 
 decho "bug_so=$bug_so" 2
 if $bug_so; then
-  decho ".so man1/bla.1 filename space bug"
-  # filename space bug / exists() function with empty arguments
-
+  decho ".so man1/bla.1 include filename"
   (
   cd "$man_dir"
   cp $($man_command -w cat) "$man_dir/man1/dog.1.gz"
